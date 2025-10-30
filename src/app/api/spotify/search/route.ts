@@ -42,7 +42,7 @@ export async function GET(request: Request) {
     console.error("Error en /api/spotify/search:", err);
 
     return NextResponse.json(
-      { error: "SPOTIFY_REQUEST_FAILED", detail: err || "Error inesperado al consultar Spotify." },
+      { error: "SPOTIFY_REQUEST_FAILED", detail: (err instanceof Error ? err.message : String(err)) },
       { status: 502 }
     );
   }
