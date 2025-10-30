@@ -42,7 +42,7 @@ export async function getTopTracksByArtist(
     album: t.album?.name || "",
     albumImage: t.album?.images?.[0]?.url || "",
     releaseDate: t.album?.release_date || "",
-    durationMs: t.duration_ms || 0,
+    duration_ms: t.duration_ms || 0,
     popularity: t.popularity || 0,
     previewUrl: t.preview_url || null,
     externalUrl: t.external_urls?.spotify || "",
