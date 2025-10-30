@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Music } from 'lucide-react';
 
 interface Artist {
     id: string;
@@ -51,7 +52,6 @@ export default function ArtistSearchResults({
               max-w-xs
             "
                     >
-                        {/* Imagen del artista */}
                         <div className="w-full aspect-square relative mb-4 overflow-hidden rounded-xl">
                             {artist.image ? (
                                 <Image
@@ -65,14 +65,11 @@ export default function ArtistSearchResults({
                                 />
                             ) : (
                                 <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                                    <span className="text-gray-400">
-                                        No Image
-                                    </span>
+                                    <Music className="w-12 h-12 text-gray-400" />
                                 </div>
                             )}
                         </div>
 
-                        {/* Nombre del artista */}
                         <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#1DB954] transition-colors">
                             {artist.name}
                         </h3>
