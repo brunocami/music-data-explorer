@@ -10,8 +10,10 @@ export async function GET(request: Request) {
   const q = searchParams.get("q");
   const limitParam = searchParams.get("limit");
   const market = searchParams.get("market");
+  const offsetParam = searchParams.get("offset");
 
   const limit = limitParam ? parseInt(limitParam, 10) : 10;
+  const offset = offsetParam ? parseInt(offsetParam, 10) : 0;
 
   if (!q || q.trim().length < 2) {
     return NextResponse.json(
@@ -28,7 +30,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const artists = await getArtistsByName(q, limit, market || undefined);
+    const artists = await getArtistsByName(q, limit, market || undefined, offset || 0);
 
     return NextResponse.json(
       {

@@ -14,7 +14,8 @@ export interface Artist {
 export async function getArtistsByName(
   query: string,
   limit: number = 10,
-  market?: string
+  market?: string,
+  offset: number = 0
 ): Promise<Artist[]> {
   if (!query || query.trim().length < 2) {
     throw new Error("Artist name is required and must be at least 2 characters.");
@@ -27,6 +28,7 @@ export async function getArtistsByName(
   url.searchParams.set("type", "artist");
   url.searchParams.set("limit", limit.toString());
   if (market) url.searchParams.set("market", market);
+  url.searchParams.set("offset", offset.toString());
 
   const res = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },

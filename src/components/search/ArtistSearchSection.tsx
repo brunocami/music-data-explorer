@@ -49,7 +49,26 @@ export default function ArtistSearchSection({
                     className="flex min-w-[60px] w-[20%] sm:w-[30%] items-center justify-center gap-2 bg-[#D6F379] text-black font-semibold px-5 py-3 rounded-full hover:bg-[#D6F37980] transition disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                     {isLoading ? (
-                        <span className="animate-pulse">Searching...</span>
+                        <svg
+                            className="animate-spin h-5 w-5 text-[#1DB954]"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            />
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            />
+                        </svg>
                     ) : (
                         <>
                             <Search className="w-4 h-5" />
