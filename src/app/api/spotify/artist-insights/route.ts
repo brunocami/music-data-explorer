@@ -22,7 +22,6 @@ export async function GET(request: Request) {
   try {
     const token = await getSpotifyAccessToken();
 
-    // 1️⃣ Obtener datos generales del artista
     const artistRes = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
@@ -45,20 +44,16 @@ export async function GET(request: Request) {
       externalUrl: artistData.external_urls?.spotify || "",
     };
 
-    // 2️⃣ Top Tracks del artista
     const topTracks = await getTopTracksByArtist(artistId, market);
 
-    // 3️⃣ Álbumes básicos (con duración promedio y año)
     const albumsBasic = await getAlbumsByArtist(artistId, market);
-    const albumIds = albumsBasic.map((a) => a.id).slice(0, 20); // Spotify permite máx. 20 IDs por batch
+    const albumIds = albumsBasic.map((a) => a.id).slice(0, 20);
 
-    // 4️⃣ Detalles de álbumes (label, copyrights, popularidad real)
     let albumsDetails: AlbumDetail[] = [];
     if (albumIds.length > 0) {
       albumsDetails = await getAlbumsDetailsByIds(albumIds);
     }
 
-    // 5️⃣ Unificar datos de álbumes (básico + detalle)
     const albums = albumsBasic.map((album) => {
       const detail = albumsDetails.find((d) => d.id === album.id);
       return {
@@ -69,12 +64,10 @@ export async function GET(request: Request) {
       };
     });
 
-    // 6️⃣ Calcular insights simples
     const avgPopularity = topTracks.reduce((sum, t) => sum + t.popularity, 0) / (topTracks.length || 1);
     const avgDurationMs =
       topTracks.reduce((sum, t) => sum + (t.duration_ms || 0), 0) / (topTracks.length || 1);
 
-    // 7️⃣ Respuesta final consolidada
     return NextResponse.json(
       {
         artist,
