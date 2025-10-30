@@ -30,13 +30,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const artists = await getArtistsByName(q, limit, market || undefined, offset || 0);
+    const res = await getArtistsByName(q, limit, market || undefined, offset || 0);
 
     return NextResponse.json(
       {
         query: { q, limit, market },
-        paging: { count: artists.length },
-        items: artists,
+        paging: { count: res.artists.length },
+        items: res.artists,
+        total: res.total
       },
       { status: 200 }
     );

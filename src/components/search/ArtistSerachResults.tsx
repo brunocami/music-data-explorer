@@ -38,9 +38,9 @@ export default function ArtistSearchResults({
           justify-items-center
         "
             >
-                {artists.map((artist) => (
+                {artists.map((artist, index) => (
                     <div
-                        key={artist.id}
+                        key={index}
                         onClick={() => onSelect(artist.id)}
                         className="
               group

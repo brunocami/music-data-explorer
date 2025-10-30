@@ -1,7 +1,7 @@
 'use client';
 import ArtistSearchSection from '@/components/search/ArtistSearchSection';
 import ArtistSearchResults from '@/components/search/ArtistSerachResults';
-import Paginator from '@/components/ui/Paginator';
+import InfiniteScroll from '@/components/ui/InfiniteScroll';
 import { Artist } from '@/lib/artistas';
 import { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
@@ -11,16 +11,18 @@ export default function Home() {
     const [loading, setLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [query, setQuery] = useState('');
+    const [total, setTotal] = useState<number | undefined>(undefined);
 
     const limit = 9;
 
     useEffect(() => {
-        if (!query || query.trim().length < 2) {
+        if (!query) return;
+
+        if (query.trim().length < 2) {
             toast('Please enter at least 2 characters.');
             return;
         }
 
-        // Cancel request pendiente si callo otra.
         const controller = new AbortController();
 
         const fetchArtists = async () => {
@@ -33,16 +35,23 @@ export default function Home() {
                     { signal: controller.signal },
                 );
                 const data = await res.json();
-                setArtists(
-                    data.items.map((a: Artist) => ({
-                        id: a.id,
-                        name: a.name,
-                        image: a.images?.[0]?.url,
-                    })),
+
+                if (Array.isArray(data.items) === false) {
+                    setLoading(false);
+                    return;
+                }
+
+                setArtists((prev) =>
+                    offset === 0 ? data.items : [...prev, ...data.items],
                 );
-            } catch (err) {
-                if (err.name === 'AbortError') return;
-                console.error(err);
+
+                // Spotify no devuelve siempre total, pero lo guardamos si existe
+                setTotal(data.paging?.total || undefined);
+            } catch (err: any) {
+                if (err.name !== 'AbortError') {
+                    return;
+                }
+                console.error('Fetch error:', err);
             } finally {
                 setLoading(false);
             }
@@ -71,9 +80,11 @@ export default function Home() {
                     onSelect={handleSelect}
                 />
                 {artists.length > 0 && (
-                    <Paginator
+                    <InfiniteScroll
                         offset={offset}
                         limit={limit}
+                        total={total}
+                        loading={loading}
                         onChange={setOffset}
                     />
                 )}
