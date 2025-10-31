@@ -46,7 +46,7 @@ export default function ArtistViewClient({ artistId }: { artistId: string }) {
 
     if (!data) {
         return (
-            <div className="min-h-screen flex items-center justify-center text-gray-300">
+            <div className="min-h-screen flex items-center justify-center text-gray-300 bg-[#222222]">
                 Failed to load artist data.
             </div>
         );
