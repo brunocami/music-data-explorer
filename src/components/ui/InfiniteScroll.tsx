@@ -77,11 +77,7 @@ export default function InfiniteScroll({
                         />
                     </svg>
                 </div>
-            ) : (
-                <span className="text-gray-500 text-xs">
-                    Scroll to load more...
-                </span>
-            )}
+            ) : null}
         </div>
     );
 }

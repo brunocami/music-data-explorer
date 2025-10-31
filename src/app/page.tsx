@@ -3,6 +3,7 @@
 import ArtistSearchSection from '@/components/search/ArtistSearchSection';
 import ArtistSearchResults from '@/components/search/ArtistSerachResults';
 import InfiniteScroll from '@/components/ui/InfiniteScroll';
+import { useTopArtists } from '@/hooks/Artist/useTopArtists';
 import { useSearch } from '@/hooks/Search/useSearch';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
@@ -14,6 +15,8 @@ export default function Home() {
 
     const { artists, offset, setOffset, setQuery, total, loading } =
         useSearch();
+
+    const { newRelease } = useTopArtists();
 
     const handleSelect = (artistId: string) => {
         router.push(`/artist/${artistId}`);
@@ -29,12 +32,17 @@ export default function Home() {
                     }}
                     isLoading={loading}
                 />
-                {artists && (
+                {artists ? (
                     <ArtistSearchResults
                         artists={artists}
                         onSelect={handleSelect}
                     />
-                )}
+                ) : newRelease ? (
+                    <ArtistSearchResults
+                        artists={newRelease}
+                        onSelect={handleSelect}
+                    />
+                ) : null}
                 {artists && artists.length > 0 && (
                     <InfiniteScroll
                         offset={offset}

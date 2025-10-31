@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const token = await getSpotifyAccessToken();
 
-    const res = await fetch("https://api.spotify.com/v1/browse/new-releases?limit=10", {
+    const res = await fetch("https://api.spotify.com/v1/browse/new-releases?limit=9", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
