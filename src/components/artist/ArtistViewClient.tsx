@@ -1,40 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import ArtistHeader from '@/components/artist/ArtistHeader';
 import ArtistStats from '@/components/artist/ArtistStats';
 import ArtistTopTracks from '@/components/artist/ArtistTopTracks';
 import ArtistAlbumsGrid from '@/components/artist/ArtistAlbumsGrid';
 import ArtistCharts from '@/components/artist/ArtistCharts';
 import Loader from '@/components/ui/Loader';
-import { ArtistInsightsResponse } from '@/app/api/spotify/artist-insights/route';
+import { useArtist } from '@/hooks/Artist/useArtist';
 
 export default function ArtistViewClient({ artistId }: { artistId: string }) {
-    const [data, setData] = useState<ArtistInsightsResponse | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch(
-                    `/api/spotify/artist-insights?artistId=${artistId}`,
-                );
-                if (res?.status !== 200) {
-                    setData(null);
-                    throw new Error(
-                        `Failed to fetch artist data: ${res.status}`,
-                    );
-                }
-                const json = await res.json();
-                setData(json);
-            } catch (err) {
-                console.error('Error loading artist:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, [artistId]);
+    const { data, loading } = useArtist(artistId);
 
     if (loading) {
         return (
