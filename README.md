@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Music Data Explorer
 
-## Getting Started
+🌐 **Live Demo:** [https://music-data-explorer.vercel.app/](https://music-data-explorer.vercel.app/)
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🧩 Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js 15 (App Router)** → Used as both backend and frontend framework in a single project.  
+  I chose Next.js to integrate **API Routes** and **React frontend** within one structure, 
+  optimizing development speed (less scalable for large projects, but ideal for this challenge).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **React (with React Compiler)** → Leveraged the new React Compiler to optimize component rendering performance.  
+  First time using it — helped improve UI efficiency.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **TypeScript** → Added for static typing and reliable autocompletion.
 
-## Learn More
+- **ESLint** → Keeps code consistent, clean, and detects potential issues early.
 
-To learn more about Next.js, take a look at the following resources:
+- **TailwindCSS** → Used for fast prototyping and consistent responsive design directly within JSX.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Recharts** → Library for building the data visualizations (popularity, duration, etc.).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🎯 Data Visualization Strategy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Initially, I aimed to use Spotify’s **Audio Features** and **Audio Analysis** endpoints to visualize musical attributes 
+like *danceability*, *energy*, and *valence*.  
+However, these endpoints turned out to be **deprecated or unavailable** using the public (client credentials) authentication flow.  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+So, I **pivoted the data strategy** to focus on endpoints still available in Spotify’s public API:
+
+- `/search` → search artists by name.  
+- `/artists/{id}/top-tracks` → fetch top songs for a given artist.  
+- `/artists/{id}/albums` → retrieve discography and release dates.  
+- `/browse/new-releases` → list recent album releases to display “recommended” artists.
+
+Using these, I was able to visualize meaningful data such as:
+- **Average popularity** of tracks and albums.  
+- **Average track duration** per album.  
+- **Popularity trends** over the years.  
+- **Album release activity** (count and type per year).
+
+---
+
+## 🧠 Development Process
+
+### 1️⃣ Planning
+The project began with defining the main goal: build a full-stack app that consumes Spotify’s API 
+and presents meaningful insights about an artist through visual and interactive charts.  
+The initial idea was to explore **musical analytics** in a clean, data-driven interface.
+
+### 2️⃣ Stack Selection
+I chose **Next.js** because it allows building both the **backend (API Routes)** and **frontend (React)** in a single environment.  
+This streamlined integration between data and UI.  
+Additionally, **TailwindCSS** was chosen for styling and **Recharts** for data visualization.
+
+### 3️⃣ Backend Development
+The first step was implementing all the backend routes under `/api/spotify`, 
+responsible for communicating with Spotify’s Web API.
+
+Each endpoint has a specific role:
+- `/search` → search artists.  
+- `/top-tracks` → fetch top tracks of an artist.  
+- `/albums` → get albums with average track duration and release year.  
+- `/albums/details` → get extended album info.  
+- `/artist-insights` → consolidate artist data into one unified response.  
+- `/new-releases` → fetch recently released artists to display on the homepage.
+
+All endpoints rely on a `spotify.ts` helper for authentication and API token management.
+
+### 4️⃣ Frontend Development
+Once the backend was solid, I built the frontend using **Next.js App Router** routes:
+
+- `/` → home page with search input and recommended artists.  
+- `/artist/[id]` → artist detail page showing charts, statistics, and discography.
+
+Each view was modularized using reusable components (`ArtistHeader`, `ArtistTopTracks`, `ArtistCharts`, etc.).
+
+### 5️⃣ Visualization & UX
+The **Artist Insights** section includes:
+- A chart of **Popularity by Year**.  
+- A chart of **Average Track Duration per Album**.  
+- Stats cards showing total albums, average popularity, top track, etc.
+
+Additionally, I implemented **infinite scroll** for artist search results 
+and **toast notifications** (using Sonner) for errors and feedback.
+
+---
+
+## 🚀 Final Result
+
+A full-stack **Next.js** application that allows users to:
+- Search for artists and explore their music.  
+- Visualize their discography and popularity trends.  
+- Interact with real Spotify data through a modern, minimalistic UI.
+
+All built with a performance-focused, single-project architecture.
+
+---
+
+## 📦 Deployment
+
+The app is deployed on **Vercel**, the native Next.js hosting platform.  
+This enables seamless integration of both the frontend and backend (API Routes) with no configuration needed.  
+Environment variables (Spotify Client ID and Secret) were securely set in Vercel’s project dashboard.
+
+🌐 **Live URL:** [https://music-data-explorer.vercel.app/](https://music-data-explorer.vercel.app/)
+

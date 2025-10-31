@@ -2,6 +2,7 @@ import { Artist } from '@/lib/artistas';
 import Image from 'next/image';
 
 export default function ArtistHeader({ artist }: { artist: Artist }) {
+    console.log(artist);
     return (
         <header className="relative bg-gradient-to-b from-[#D6F379]/20 to-transparent pt-12 pb-20 text-center">
             <div className="flex flex-col items-center">
@@ -23,8 +24,8 @@ export default function ArtistHeader({ artist }: { artist: Artist }) {
                 </p>
 
                 <p className="text-gray-300 text-sm">
-                    {artist.followers.toLocaleString()} followers · Popularity{' '}
-                    {artist.popularity}/100
+                    {artist.followers.total.toLocaleString()} followers ·
+                    Popularity {artist.popularity}/100
                 </p>
 
                 <a
