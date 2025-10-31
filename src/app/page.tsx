@@ -46,7 +46,9 @@ export default function Home() {
                 }
 
                 setArtists((prev) =>
-                    offset === 0 ? data.items : [...prev, ...data.items],
+                    offset === 0
+                        ? data.items
+                        : [...(prev ?? []), ...data.items],
                 );
 
                 setTotal(data.paging?.total || undefined);
