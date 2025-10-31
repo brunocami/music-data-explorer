@@ -1,17 +1,21 @@
 'use client';
+
 import ArtistSearchSection from '@/components/search/ArtistSearchSection';
 import ArtistSearchResults from '@/components/search/ArtistSerachResults';
 import InfiniteScroll from '@/components/ui/InfiniteScroll';
 import { Artist } from '@/lib/artistas';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast, Toaster } from 'sonner';
 
 export default function Home() {
-    const [artists, setArtists] = useState<Artist[]>([]);
+    const [artists, setArtists] = useState<Artist[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [offset, setOffset] = useState(0);
     const [query, setQuery] = useState('');
     const [total, setTotal] = useState<number | undefined>(undefined);
+
+    const router = useRouter();
 
     const limit = 9;
 
@@ -45,7 +49,6 @@ export default function Home() {
                     offset === 0 ? data.items : [...prev, ...data.items],
                 );
 
-                // Spotify no devuelve siempre total, pero lo guardamos si existe
                 setTotal(data.paging?.total || undefined);
             } catch (err: any) {
                 if (err.name !== 'AbortError') {
@@ -62,7 +65,7 @@ export default function Home() {
     }, [query, offset]);
 
     const handleSelect = (artistId: string) => {
-        console.log('Selected artist:', artistId);
+        router.push(`/artist/${artistId}`);
     };
     return (
         <main className="min-h-screen bg-[#222222] text-white">
@@ -75,11 +78,13 @@ export default function Home() {
                     }}
                     isLoading={loading}
                 />
-                <ArtistSearchResults
-                    artists={artists}
-                    onSelect={handleSelect}
-                />
-                {artists.length > 0 && (
+                {artists && (
+                    <ArtistSearchResults
+                        artists={artists}
+                        onSelect={handleSelect}
+                    />
+                )}
+                {artists && artists.length > 0 && (
                     <InfiniteScroll
                         offset={offset}
                         limit={limit}

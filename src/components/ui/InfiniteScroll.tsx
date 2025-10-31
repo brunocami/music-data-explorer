@@ -28,12 +28,10 @@ export default function InfiniteScroll({
             (entries) => {
                 const entry = entries[0];
 
-                // Evita loops: no seguir cargando si ya no hay más resultados
                 if (total && offset + limit >= total) return;
 
-                // Evita disparar múltiples veces
                 if (entry.isIntersecting && !loading && !fetchingRef.current) {
-                    fetchingRef.current = true; // lock para no repetir
+                    fetchingRef.current = true;
                     onChange(offset + limit);
                 }
             },
@@ -49,7 +47,6 @@ export default function InfiniteScroll({
         return () => observer.disconnect();
     }, [offset, limit, total, loading, onChange]);
 
-    // Liberar el lock cuando termine la carga
     useEffect(() => {
         if (!loading) fetchingRef.current = false;
     }, [loading]);
@@ -60,7 +57,7 @@ export default function InfiniteScroll({
                 <div className="flex items-center gap-2 text-gray-400 text-sm animate-pulse">
                     <span>Loading more...</span>
                     <svg
-                        className="animate-spin h-4 w-4 text-[#1DB954]"
+                        className="animate-spin h-4 w-4 text-[#D6F379]"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"

@@ -70,7 +70,7 @@ export default function ArtistSearchResults({
                             )}
                         </div>
 
-                        <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#1DB954] transition-colors">
+                        <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#D6F379] transition-colors">
                             {artist.name}
                         </h3>
                     </div>
