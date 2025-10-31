@@ -48,10 +48,13 @@ export async function GET(request: Request): Promise<NextResponse<ArtistInsights
       throw new Error(`Error obteniendo datos del artista: ${artistRes.status} ${text}`);
     }
 
+    // 1. Obtener datos del artista
     const artistData = await artistRes.json();
 
+    // 2. Obtener top tracks
     const topTracks = await getTopTracksByArtist(artistId, market);
 
+    // 3. Obtener albums y sus detalles
     const albumsBasic = await getAlbumsByArtist(artistId, market);
     const albumIds = albumsBasic.map((a) => a.id).slice(0, 20);
 
@@ -60,6 +63,7 @@ export async function GET(request: Request): Promise<NextResponse<ArtistInsights
       albumsDetails = await getAlbumsDetailsByIds(albumIds);
     }
 
+    // 4. Combinar datos de albums con duración promedio
     const albums: AlbumDetailResponse[] | undefined = albumsBasic
       .map((album) => {
         const detail = albumsDetails.find((d) => d.id === album.id);
@@ -72,10 +76,12 @@ export async function GET(request: Request): Promise<NextResponse<ArtistInsights
     })
       .filter((detail): detail is AlbumDetailResponse => detail !== undefined);
 
+    // 5. Calcular insights
     const avgPopularity = topTracks.reduce((sum, t) => sum + t.popularity, 0) / (topTracks.length || 1);
     const avgDurationMs =
       topTracks.reduce((sum, t) => sum + (t.duration_ms || 0), 0) / (topTracks.length || 1);
 
+    // 6. Retornar respuesta
     return NextResponse.json(
       {
         artist: artistData,

@@ -19,6 +19,12 @@ export default function ArtistViewClient({ artistId }: { artistId: string }) {
                 const res = await fetch(
                     `/api/spotify/artist-insights?artistId=${artistId}`,
                 );
+                if (res?.status !== 200) {
+                    setData(null);
+                    throw new Error(
+                        `Failed to fetch artist data: ${res.status}`,
+                    );
+                }
                 const json = await res.json();
                 setData(json);
             } catch (err) {
