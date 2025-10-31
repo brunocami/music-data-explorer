@@ -108,3 +108,56 @@ Environment variables (Spotify Client ID and Secret) were securely set in Vercel
 
 🌐 **Live URL:** [https://music-data-explorer.vercel.app/](https://music-data-explorer.vercel.app/)
 
+## 🧰 Installation & Setup (Local Environment)
+
+## 1️⃣ Clone the repository
+
+git clone https://github.com/<your-username>/music-data-explorer.git
+cd music-data-explorer
+
+## 2️⃣ Install dependencies
+
+Make sure you have Node.js 18+ installed.
+
+```bash
+
+npm install
+
+```
+## 3️⃣ Create your .env.local file
+
+In the project root, create a new file named .env.local
+and add the following environment variables:
+
+```bash
+SPOTIFY_CLIENT_ID=78b1195248614913894c23216ec6d7b1
+SPOTIFY_CLIENT_SECRET=2e43e172bba84ebebfe337ff2f5f1745
+SPOTIFY_TOKEN_URL=https://accounts.spotify.com/api/token
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+
+## 4️⃣ Get Spotify API credentials
+
+- Go to Spotify Developer Dashboard
+
+- Log in with your Spotify account.
+
+- Click "Create an App".
+
+- Give it a name (e.g., Music Data Explorer) and description.
+
+- After creation, open the app — you’ll see your:
+
+- Client ID
+
+- Client Secret
+
+- Copy those values into your .env.local file as shown above.
+
+## 5️⃣ Run the development server
+
+Start the local environment:
+
+```bash
+npm run dev
+```
