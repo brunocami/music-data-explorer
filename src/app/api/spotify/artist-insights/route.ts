@@ -1,13 +1,29 @@
 import { NextResponse } from "next/server";
 import { getSpotifyAccessToken } from "@/lib/spotify";
-import { getTopTracksByArtist } from "@/lib/tracks";
+import { getTopTracksByArtist,  TrackResponse } from "@/lib/tracks";
 import { getAlbumsByArtist } from "@/lib/albums";
-import { AlbumDetail, getAlbumsDetailsByIds } from "@/lib/albumDetails";
+import { AlbumDetailResponse, getAlbumsDetailsByIds } from "@/lib/albumDetails";
+import { Artist } from "@/lib/artistas";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-export async function GET(request: Request) {
+export interface Insights {
+    avgPopularity: number;
+    avgDurationMs: number;
+    albumsCount: number;
+    topTrack: string;
+}
+
+
+export interface ArtistInsightsResponse {
+    artist: Artist;
+    insights: Insights;
+    topTracks: TrackResponse[];
+    albums: Array<AlbumDetailResponse> | undefined;
+}
+
+export async function GET(request: Request): Promise<NextResponse<ArtistInsightsResponse | { error: string; detail: string }>> {
   const { searchParams } = new URL(request.url);
   const artistId = searchParams.get("artistId");
   const market = searchParams.get("market") || "US";
@@ -34,35 +50,19 @@ export async function GET(request: Request) {
 
     const artistData = await artistRes.json();
 
-    const artist = {
-      id: artistData.id,
-      name: artistData.name,
-      genres: artistData.genres || [],
-      followers: artistData.followers?.total || 0,
-      popularity: artistData.popularity || 0,
-      image: artistData.images?.[0]?.url || "",
-      externalUrl: artistData.external_urls?.spotify || "",
-    };
-
     const topTracks = await getTopTracksByArtist(artistId, market);
 
     const albumsBasic = await getAlbumsByArtist(artistId, market);
     const albumIds = albumsBasic.map((a) => a.id).slice(0, 20);
 
-    let albumsDetails: AlbumDetail[] = [];
+    let albumsDetails: AlbumDetailResponse[] = [];
     if (albumIds.length > 0) {
       albumsDetails = await getAlbumsDetailsByIds(albumIds);
     }
 
-    const albums = albumsBasic.map((album) => {
-      const detail = albumsDetails.find((d) => d.id === album.id);
-      return {
-        ...album,
-        label: detail?.label || "",
-        popularity: detail?.popularity || album.popularity_avg || 0,
-        copyrights: detail?.copyrights || [],
-      };
-    });
+    const albums: AlbumDetailResponse[] = albumsBasic
+      .map((album) => albumsDetails.find((d) => d.id === album.id))
+      .filter((detail): detail is AlbumDetailResponse => detail !== undefined);
 
     const avgPopularity = topTracks.reduce((sum, t) => sum + t.popularity, 0) / (topTracks.length || 1);
     const avgDurationMs =
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(
       {
-        artist,
+        artist: artistData,
         insights: {
           avgPopularity: Math.round(avgPopularity),
           avgDurationMs,

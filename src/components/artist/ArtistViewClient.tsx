@@ -7,9 +7,10 @@ import ArtistTopTracks from '@/components/artist/ArtistTopTracks';
 import ArtistAlbumsGrid from '@/components/artist/ArtistAlbumsGrid';
 import ArtistCharts from '@/components/artist/ArtistCharts';
 import Loader from '@/components/ui/Loader';
+import { ArtistInsightsResponse } from '@/app/api/spotify/artist-insights/route';
 
 export default function ArtistViewClient({ artistId }: { artistId: string }) {
-    const [data, setData] = useState<any | null>(null);
+    const [data, setData] = useState<ArtistInsightsResponse | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,6 +21,7 @@ export default function ArtistViewClient({ artistId }: { artistId: string }) {
                 );
                 const json = await res.json();
                 setData(json);
+                console.log('Artist data loaded:', json);
             } catch (err) {
                 console.error('Error loading artist:', err);
             } finally {
@@ -56,16 +58,22 @@ export default function ArtistViewClient({ artistId }: { artistId: string }) {
                     <h2 className="text-2xl font-semibold mb-4">Top Tracks</h2>
                     <ArtistTopTracks tracks={topTracks} />
                 </div>
-                <div className="mt-16">
-                    <h2 className="text-2xl font-semibold mb-4">Discography</h2>
-                    <ArtistAlbumsGrid albums={albums} />
-                </div>
-                <div className="mt-16">
-                    <h2 className="text-2xl font-semibold mb-4">
-                        Artist Insights
-                    </h2>
-                    <ArtistCharts albums={albums} />
-                </div>
+                {albums && albums.length > 0 && (
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Discography
+                        </h2>
+                        <ArtistAlbumsGrid albums={albums} />
+                    </div>
+                )}
+                {albums && albums.length > 0 && (
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-semibold mb-4">
+                            Artist Insights
+                        </h2>
+                        <ArtistCharts albums={albums} />
+                    </div>
+                )}
             </section>
         </main>
     );

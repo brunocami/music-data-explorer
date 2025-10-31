@@ -1,9 +1,4 @@
-interface Insights {
-    avgPopularity: number;
-    avgDurationMs: number;
-    albumsCount: number;
-    topTrack: string;
-}
+import { Insights } from '@/app/api/spotify/artist-insights/route';
 
 export default function ArtistStats({ insights }: { insights: Insights }) {
     const avgDurationMin = Math.round(insights.avgDurationMs / 60000);

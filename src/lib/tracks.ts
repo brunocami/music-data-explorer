@@ -12,10 +12,23 @@ export interface Track {
     artists: Artist[];
 }
 
+export interface TrackResponse {
+    id: string;
+    name: string;
+    album: string;
+    albumImage: string;
+    releaseDate: string;
+    duration_ms: number;
+    popularity: number;
+    previewUrl: string | null;
+    externalUrl: string;
+    artists: string[];
+}
+
 export async function getTopTracksByArtist(
   artistId: string,
   market: string = "US"
-): Promise<Track[]> {
+): Promise<TrackResponse[]> {
   if (!artistId) {
     throw new Error("El parámetro artistId es obligatorio.");
   }

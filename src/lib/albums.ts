@@ -18,7 +18,6 @@ export async function getAlbumsByArtist(artistId: string, market: string = "US",
 
   const token = await getSpotifyAccessToken();
 
-  // 1️⃣ Obtener todos los álbumes del artista
   const albumsUrl = `https://api.spotify.com/v1/artists/${artistId}/albums?include_groups=album,single,compilation,appears_on&limit=50&offset=${offset}&market=${market}`;
   const res = await fetch(albumsUrl, {
     headers: { Authorization: `Bearer ${token}` },
@@ -33,7 +32,6 @@ export async function getAlbumsByArtist(artistId: string, market: string = "US",
   const data = await res.json();
   const albums: AlbumStats[] = data.items || [];
 
-  // 2️⃣ Iterar sobre cada álbum y obtener tracks
   const albumsData: AlbumStats[] = [];
 
   for (const album of albums) {
@@ -43,17 +41,14 @@ export async function getAlbumsByArtist(artistId: string, market: string = "US",
       cache: "no-store",
     });
 
-    if (!tracksRes.ok) continue; // saltar álbum si falla
+    if (!tracksRes.ok) continue; 
     const tracksData = await tracksRes.json();
 
     const tracks = tracksData.items || [];
 
-    // Calcular duración promedio
     const totalDuration = tracks.reduce((sum: number, t: { duration_ms?: number }) => sum + (t.duration_ms || 0), 0);
     const durationAvgMs = tracks.length ? totalDuration / tracks.length : 0;
 
-    // No tenemos popularidad de los tracks directamente en este endpoint,
-    // así que usamos la popularidad del álbum como aproximación.
     const popularityAvg = album.popularity ?? 0;
 
     const releaseYear = album.release_date ? parseInt(album.release_date.slice(0, 4)) : 0;

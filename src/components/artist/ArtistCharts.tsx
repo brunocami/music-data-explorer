@@ -1,6 +1,6 @@
 'use client';
 
-import { AlbumDetail } from '@/lib/albumDetails';
+import { AlbumDetailResponse } from '@/lib/albumDetails';
 import {
     ResponsiveContainer,
     BarChart,
@@ -10,14 +10,18 @@ import {
     Tooltip,
 } from 'recharts';
 
-export default function ArtistCharts({ albums }: { albums: AlbumDetail[] }) {
+export default function ArtistCharts({
+    albums,
+}: {
+    albums: AlbumDetailResponse[];
+}) {
     const popularityByYear = albums.map((a) => ({
-        year: a.release_date_precision,
+        year: a.releaseDate,
         popularity: a.popularity,
     }));
     const durationByAlbum = albums.map((a) => ({
         album: a.name.slice(0, 15) + '...',
-        duration: Math.round(a.duration_avg_ms / 1000 / 60),
+        duration: Math.round(a.duration_avg_ms || 0 / 1000 / 60),
     }));
 
     return (

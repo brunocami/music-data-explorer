@@ -40,7 +40,29 @@ export interface AlbumDetail {
   popularity: number;
 }
 
-export async function getAlbumsDetailsByIds(albumIds: string[]): Promise<AlbumDetail[]> {
+export interface AlbumDetailResponse {
+    id: string;
+    name: string;
+    artists: Artist[];
+    label: string;
+    popularity: number;
+    releaseDate: string;
+    releaseYear: string;
+    totalTracks: string;
+    genres: string[];
+    copyrights: string[];
+    image: Array<{
+        url: string;
+        height: number;
+        width: number;
+    }>;
+    externalUrl: {
+        spotify: string;
+    };
+    duration_avg_ms?: number;
+}
+
+export async function getAlbumsDetailsByIds(albumIds: string[]): Promise<AlbumDetailResponse[]> {
   if (!albumIds || albumIds.length === 0) {
     throw new Error("Debes proporcionar al menos un ID de álbum.");
   }

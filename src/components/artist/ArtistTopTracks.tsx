@@ -1,7 +1,11 @@
-import { Track } from '@/lib/tracks';
+import { TrackResponse } from '@/lib/tracks';
 import Image from 'next/image';
 
-export default function ArtistTopTracks({ tracks }: { tracks: Track[] }) {
+export default function ArtistTopTracks({
+    tracks,
+}: {
+    tracks: TrackResponse[];
+}) {
     return (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tracks.map((track) => (
