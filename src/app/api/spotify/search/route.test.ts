@@ -8,6 +8,11 @@ jest.mock("@/lib/artistas", () => ({
 describe("GET /api/spotify/search", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mock por defecto para evitar errores inesperados
+    (getArtistsByName as jest.Mock).mockResolvedValue({
+      artists: [],
+      total: 0,
+    });
   });
 
   const buildRequest = (url: string) => new Request(url);
@@ -43,10 +48,13 @@ describe("GET /api/spotify/search", () => {
   });
 
   it("debería devolver 200 y los artistas si la búsqueda es válida", async () => {
-    (getArtistsByName as jest.Mock).mockResolvedValueOnce([
-      { id: "1", name: "The Beatles" },
-      { id: "2", name: "Queen" },
-    ]);
+    (getArtistsByName as jest.Mock).mockResolvedValueOnce({
+      artists: [
+        { id: "1", name: "The Beatles" },
+        { id: "2", name: "Queen" },
+      ],
+      total: 2,
+    });
 
     const req = buildRequest(
       "http://localhost/api/spotify/search?q=rock&limit=2&market=US"
@@ -58,7 +66,9 @@ describe("GET /api/spotify/search", () => {
     expect(data.query).toEqual({ q: "rock", limit: 2, market: "US" });
     expect(data.paging.count).toBe(2);
     expect(data.items[0].name).toBe("The Beatles");
-    expect(getArtistsByName).toHaveBeenCalledWith("rock", 2, "US");
+    expect(data.total).toBe(2);
+
+    expect(getArtistsByName).toHaveBeenCalledWith("rock", 2, "US", 0);
   });
 
   it("debería devolver 502 si ocurre un error en getArtistsByName", async () => {
@@ -76,7 +86,7 @@ describe("GET /api/spotify/search", () => {
 
     expect(res.status).toBe(502);
     expect(data.error).toBe("SPOTIFY_REQUEST_FAILED");
-    expect(data.detail).toBeTruthy();
+    expect(data.detail).toContain("Spotify");
 
     consoleSpy.mockRestore();
   });
