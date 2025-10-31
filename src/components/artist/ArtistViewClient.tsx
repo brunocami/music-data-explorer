@@ -21,7 +21,6 @@ export default function ArtistViewClient({ artistId }: { artistId: string }) {
                 );
                 const json = await res.json();
                 setData(json);
-                console.log('Artist data loaded:', json);
             } catch (err) {
                 console.error('Error loading artist:', err);
             } finally {

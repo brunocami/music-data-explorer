@@ -51,15 +51,11 @@ export interface AlbumDetailResponse {
     totalTracks: string;
     genres: string[];
     copyrights: string[];
-    image: Array<{
-        url: string;
-        height: number;
-        width: number;
-    }>;
+    image: string;
     externalUrl: {
         spotify: string;
     };
-    duration_avg_ms?: number;
+    duration_avg_ms: number;
 }
 
 export async function getAlbumsDetailsByIds(albumIds: string[]): Promise<AlbumDetailResponse[]> {
@@ -99,6 +95,6 @@ export async function getAlbumsDetailsByIds(albumIds: string[]): Promise<AlbumDe
     genres: a.genres || [],
     copyrights: (a.copyrights || []).map((c: { text: string; type: string }) => c.text),
     image: a.images?.[0]?.url || "",
-    externalUrl: a.external_urls?.spotify || "",
+    externalUrl: a.external_urls?.spotify || ""
   }));
 }

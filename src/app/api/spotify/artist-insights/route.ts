@@ -60,8 +60,16 @@ export async function GET(request: Request): Promise<NextResponse<ArtistInsights
       albumsDetails = await getAlbumsDetailsByIds(albumIds);
     }
 
-    const albums: AlbumDetailResponse[] = albumsBasic
-      .map((album) => albumsDetails.find((d) => d.id === album.id))
+    const albums: AlbumDetailResponse[] | undefined = albumsBasic
+      .map((album) => {
+        const detail = albumsDetails.find((d) => d.id === album.id);
+        if (!detail) return undefined;
+        return {
+            ...detail,
+            duration_avg_ms: album?.duration_avg_ms ?? 0,
+        };
+    
+    })
       .filter((detail): detail is AlbumDetailResponse => detail !== undefined);
 
     const avgPopularity = topTracks.reduce((sum, t) => sum + t.popularity, 0) / (topTracks.length || 1);
@@ -74,7 +82,7 @@ export async function GET(request: Request): Promise<NextResponse<ArtistInsights
         insights: {
           avgPopularity: Math.round(avgPopularity),
           avgDurationMs,
-          albumsCount: albums.length,
+          albumsCount: albums?.length || 0,
           topTrack: topTracks[0]?.name || "",
         },
         topTracks,

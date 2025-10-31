@@ -14,7 +14,7 @@ export default function ArtistAlbumsGrid({
                     className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg p-3 text-center transition"
                 >
                     <Image
-                        src={album.image[0].url || '/placeholder-album.png'}
+                        src={album.image || '/placeholder-album.png'}
                         alt={album.name}
                         width={180}
                         height={180}

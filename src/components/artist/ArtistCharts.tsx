@@ -15,13 +15,15 @@ export default function ArtistCharts({
 }: {
     albums: AlbumDetailResponse[];
 }) {
-    const popularityByYear = albums.map((a) => ({
-        year: a.releaseDate,
-        popularity: a.popularity,
-    }));
+    const popularityByYear = albums
+        .map((a) => ({
+            year: a.releaseYear,
+            popularity: a.popularity,
+        }))
+        .sort((a, b) => Number(a.year) - Number(b.year)); // Ordena de mayor a menor año
     const durationByAlbum = albums.map((a) => ({
         album: a.name.slice(0, 15) + '...',
-        duration: Math.round(a.duration_avg_ms || 0 / 1000 / 60),
+        duration: Math.round(a.duration_avg_ms / 1000 / 60),
     }));
 
     return (
@@ -33,6 +35,7 @@ export default function ArtistCharts({
                 <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={popularityByYear}>
                         <XAxis dataKey="year" stroke="#ccc" />
+                        {/* El orden de los datos ya está invertido por el sort */}
                         <YAxis stroke="#ccc" />
                         <Tooltip />
                         <Bar
